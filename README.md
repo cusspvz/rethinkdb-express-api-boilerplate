@@ -6,8 +6,8 @@ Another API boilerplate, based on express and rethinkdb backend.
 
 Includes:
 
+* JWT-based Auth Service
 * Docker build image
-* Auth Service
 * User Service
 * Service generator
 * Model generator
@@ -33,13 +33,20 @@ cd my-api
 yarn install # or: npm install
 ```
 
-## Instalation
+## Development
 
 ```bash
 npm run dev
 ```
 
+## Updating
 
+Easy.....
+
+**Just place a new copy the boilerplate/ folder on your project**
+And, of course, adjust dependencies on your `package.json`.
+
+![mtiymzaymjewmtyyodq3mdax](https://cloud.githubusercontent.com/assets/3604053/23471880/c74a5852-fea2-11e6-8c0e-d81c00fd0844.jpg)
 
 ## Building
 
