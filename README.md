@@ -7,7 +7,7 @@ Another API boilerplate, based on express and rethinkdb backend.
 Includes:
 
 * Async/Promise methods into express (avoid next callback hell)
-* Service generator with support for hooks and custom methods (see [todo](https://github.com/cusspvz/rethinkdb-express-api-boilerplate/blob/master/src/services/todo.js) example)
+* Service generator with support for hooks and custom methods (see [todo](https://github.com/cusspvz/rethinkdb-express-api-boilerplate/blob/master/src/services/todos.js) example)
 * Model generator (see [todo](https://github.com/cusspvz/rethinkdb-express-api-boilerplate/blob/master/src/models/todo.js) example)
 * JWT-based Auth Service
 * Docker build image
