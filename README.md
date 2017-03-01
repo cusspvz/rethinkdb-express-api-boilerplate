@@ -25,6 +25,7 @@ Uses:
 
 * Node.JS
 * Yarn / NPM
+* RethinkDB service
 
 ## Instalation
 
