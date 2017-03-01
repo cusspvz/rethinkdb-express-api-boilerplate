@@ -30,7 +30,7 @@ export default class Service {
       }
     }
 
-    this.hooks = typeof options.hooks == 'object' && options.hooks || []
+    this.hooks = typeof options.hooks == 'object' && options.hooks || {}
     this.middlewares = typeof options.middlewares == 'object' && options.middlewares || []
   }
 
@@ -91,16 +91,21 @@ export default class Service {
 
   // End of default methods
 
-  async hook ( when, action, ...args ) {
+  hook = async ( when, action, ...args ) => {
     const { hooks } = this
 
     const runningFor = `${when} ${action}`
 
-    for ( let hookName in hooks ) {
-      if ( hookName !== runningFor ) continue
-
-      await hooks[hookName].apply( this, args )
+    if ( hooks && typeof hooks[runningFor] == 'function' ) {
+      await hooks[runningFor].apply( this, args )
     }
+
+    // Save it for later, to allow multiple hooks
+    // for ( let hookName in hooks ) {
+    //   if ( hookName !== runningFor ) continue
+    //
+    //   await hooks[hookName].apply( this, args )
+    // }
   }
 
   setup ( app ) {
@@ -127,15 +132,17 @@ export default class Service {
         continue
       }
 
-      const path = methodAPI.splice(0,1)
+      const path = methodAPI.splice(0,1)[0]
 
       // NOTE: this may need nextAsync
 
       console.log( `[${endpoint}] - setting up: ${method} ${path}`)
-      router[method].call( router, nextAsync( this[methodName] ) )
+      router[method].call( router, path,
+        nextAsync( this[methodName].bind( this ) )
+      )
     }
 
-    app.all( endpoint, router )
+    app.use( endpoint, router )
 
     console.log( `[${endpoint}] - setup completed` )
   }

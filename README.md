@@ -2,15 +2,16 @@
 
 Another API boilerplate, based on express and rethinkdb backend.
 
-![zuiebw](https://cloud.githubusercontent.com/assets/3604053/23471562/b069515c-fea1-11e6-944d-06da4b318fe0.jpg)
+![my api would stay up](https://cloud.githubusercontent.com/assets/3604053/23471562/b069515c-fea1-11e6-944d-06da4b318fe0.jpg)
 
 Includes:
 
+* Async/Promise methods into express (avoid next callback hell)
+* Service generator with support for hooks and custom methods (see [todo](https://github.com/cusspvz/rethinkdb-express-api-boilerplate/blob/master/src/services/todo.js) example)
+* Model generator (see [todo](https://github.com/cusspvz/rethinkdb-express-api-boilerplate/blob/master/src/models/todo.js) example)
 * JWT-based Auth Service
 * Docker build image
 * User Service
-* Service generator
-* Model generator
 
 
 Uses:
@@ -41,12 +42,11 @@ npm run dev
 
 ## Updating
 
-Easy.....
-
 **Just place a new copy the boilerplate/ folder on your project**
-And, of course, adjust dependencies on your `package.json`.
 
-![mtiymzaymjewmtyyodq3mdax](https://cloud.githubusercontent.com/assets/3604053/23471880/c74a5852-fea2-11e6-8c0e-d81c00fd0844.jpg)
+![for real?](https://cloud.githubusercontent.com/assets/3604053/23471880/c74a5852-fea2-11e6-8c0e-d81c00fd0844.jpg)
+
+And, of course, adjust dependencies on your `package.json`.
 
 ## Building
 

@@ -11,17 +11,21 @@ export const Users = new Service({
     'POST /': async function create (req) {
       const { body: { email, password, name } } = req
 
-      if (!email || !EmailValidator.validate(email))
+      if (!email || !EmailValidator.validate(email)) {
         throw new HttpError(400, 'Invalid email address')
+      }
 
-      if (!password)
+      if (!password) {
         throw new HttpError(400, 'Invalid password')
+      }
 
-      if (!name)
+      if (!name) {
         throw new HttpError(400, 'Invalid name')
+      }
 
-      if (await User.getByEmail(email))
+      if (await User.getByEmail(email)) {
         throw new HttpError(400, 'Email already in use')
+      }
 
       const hpassword = await hashPassword( password )
 
