@@ -1,9 +1,8 @@
 # rethink-express-api-boilerplate
 
-Another backend boilerplate, based on express and rethinkdb backend.
+Another API boilerplate, based on express and rethinkdb backend.
 
-This repo is a **Work in Progress**
-
+![zuiebw](https://cloud.githubusercontent.com/assets/3604053/23471562/b069515c-fea1-11e6-944d-06da4b318fe0.jpg)
 
 Includes:
 
