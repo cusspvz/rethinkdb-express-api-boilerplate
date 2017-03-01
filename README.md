@@ -38,7 +38,7 @@ yarn install # or: npm install
 ## Development
 
 ```bash
-npm run dev
+yarn run dev # or: npm run dev
 ```
 
 ## Updating
