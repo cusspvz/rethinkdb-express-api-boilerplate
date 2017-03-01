@@ -6,7 +6,7 @@ Another API boilerplate, based on express and rethinkdb backend.
 
 Includes:
 
-* Async/Promise methods into express (avoid next callback hell)
+* Async/Promise methods into express (avoid `next()` callback hell)
 * Service generator with support for hooks and custom methods (see [todo](https://github.com/cusspvz/rethinkdb-express-api-boilerplate/blob/master/src/services/todos.js) example)
 * Model generator (see [todo](https://github.com/cusspvz/rethinkdb-express-api-boilerplate/blob/master/src/models/todo.js) example)
 * JWT-based Auth Service
@@ -43,7 +43,7 @@ yarn run dev # or: npm run dev
 
 ## Updating
 
-**Just place a new copy the boilerplate/ folder on your project**
+**Just place a new copy of the `boilerplate/` folder on your project**
 
 ![for real?](https://cloud.githubusercontent.com/assets/3604053/23471880/c74a5852-fea2-11e6-8c0e-d81c00fd0844.jpg)
 

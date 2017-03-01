@@ -122,9 +122,15 @@ export default class Service {
     }
 
     for ( let methodName in this ) {
+      if ( typeof this[methodName] != 'function' ) {
+        continue
+      }
+
       const methodAPI = methodName.split(' ')
 
-      if ( methodAPI.length < 2 ) continue
+      if ( methodAPI.length < 2 ) {
+        continue
+      }
 
       const method = methodAPI.splice(0,1)[0].toLowerCase()
 
