@@ -1,7 +1,8 @@
 # Logs
 logs
 *.log
-npm-debug.log*
+npm-debug.log
+npm-debug.log-*
 
 # Runtime data
 pids
@@ -28,7 +29,7 @@ coverage
 build/Release
 
 # Compiled files
-lib
+build/
 
 # Dependency directories
 node_modules

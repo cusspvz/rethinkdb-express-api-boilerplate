@@ -1,4 +1,4 @@
-import User from '../models/user'
+import { User } from '../../src/models'
 import Service from '../utils/service'
 
 export const Users = new Service({

@@ -1,1 +1,1 @@
-export { User } from '../../boilerplate/models/user'
+export User from '../../boilerplate/models/user'

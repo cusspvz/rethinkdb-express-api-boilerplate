@@ -31,7 +31,7 @@ export const setup = async () => {
   }
 
   // Had to include this with require because of sync requiring
-  const models = require( './models' )
+  const models = require( '../src/models' )
 
   for ( let name in models ) {
     let table = models[name].table
