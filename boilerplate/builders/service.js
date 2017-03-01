@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import nextAsync from '../utils/next-async'
 
 const DEFAULT_OPTIONS = {
   model: undefined,
@@ -128,8 +129,10 @@ export default class Service {
 
       const path = methodAPI.splice(0,1)
 
+      // NOTE: this may need nextAsync
+
       console.log( `[${endpoint}] - setting up: ${method} ${path}`)
-      router[method].call( router, this[methodName] )
+      router[method].call( router, nextAsync( this[methodName] ) )
     }
 
     app.all( endpoint, router )

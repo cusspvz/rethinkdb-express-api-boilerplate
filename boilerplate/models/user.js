@@ -1,6 +1,6 @@
 import rethinkdb from 'rethinkdb'
 import connector from '../database'
-import Model from '../utils/model'
+import Model from '../builders/model'
 
 export const User = new Model ({
   table: 'users',
