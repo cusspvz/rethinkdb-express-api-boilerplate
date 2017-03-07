@@ -57,9 +57,13 @@ export default class Service {
 
   'GET /:id' = async ( req ) => {
     const { params: { id } } = req
-    const { model } = this
+    const { model, hook } = this
 
-    return await model.get(id)
+    await hook( 'before', 'get read', req, id )
+    const data = await model.get(id)
+    await hook( 'after', 'get read', req, id, data )
+
+    return data
   }
 
   'PUT /:id' = async ( req ) => {
@@ -117,8 +121,8 @@ export default class Service {
 
     const router = this.router = new Router()
 
-    for ( let [ middleware ] of middlewares ) {
-      router.use( middleware )
+    for ( let middleware of middlewares ) {
+      router.use( nextAsync( middleware ) )
     }
 
     for ( let methodName in this ) {
@@ -139,8 +143,6 @@ export default class Service {
       }
 
       const path = methodAPI.splice(0,1)[0]
-
-      // NOTE: this may need nextAsync
 
       console.log( `[${endpoint}] - setting up: ${method} ${path}`)
       router[method].call( router, path,

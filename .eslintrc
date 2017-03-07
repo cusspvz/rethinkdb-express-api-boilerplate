@@ -4,7 +4,7 @@
     "node": true,
     "mocha": true
   },
-  "extends": "eslint:recommended",
+  "preset": "eslint:recommended",
   "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module"
@@ -14,10 +14,6 @@
     "indent": [
       "error",
       2
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
     ],
     "quotes": [
       "error",

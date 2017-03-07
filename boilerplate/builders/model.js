@@ -28,59 +28,54 @@ export class Model {
 
   }
 
-  async create (userData) {
+  async create (data, returnData = true) {
     const conn = await connector()
 
-    return await this.do
-      .insert(userData)
-      .run(conn)
+    const status = await this.do.insert(data).run(conn)
+
+    if ( returnData ) {
+      const key = status.generated_keys[0]
+      return await this.get(key)
+    }
+
+    return status
   }
 
-  async get (id) {
+  async get (key) {
     const conn = await connector()
 
-    return await this.do
-      .get(id)
-      .run(conn)
+    return await this.do.get(key).run(conn)
   }
 
-  async getAll () {
+  async getAll ( returnCursor ) {
     const conn = await connector()
 
-    return await this.do
-      .getAll()
-      .run(conn)
+    const cursor = await this.do.getAll().run(conn)
+
+    return returnCursor ? cursor : await cursor.toArray()
   }
 
-  async update (id, payload) {
+  async update (key, payload) {
     const conn = await connector()
 
-    const res = await this.do
-      .get(id)
-      .update(payload)
-      .run(conn)
+    const res = await this.do.get(key).update(payload).run(conn)
 
     if( res.errors )
-      return null
+      throw new Error('Error while updating')
 
     return res
   }
 
-  async remove (id) {
+  async remove (key) {
     const conn = await connector()
 
-    return await this.do
-      .get(id)
-      .delete()
-      .run(conn)
+    return await this.do.get(key).delete().run(conn)
   }
 
   async removeAll () {
     const conn = await connector()
 
-    return await this.do
-      .delete()
-      .run(conn)
+    return await this.do.delete().run(conn)
   }
 
   get do () {
