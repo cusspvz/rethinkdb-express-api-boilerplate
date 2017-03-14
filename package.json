@@ -29,6 +29,7 @@
     "express": "^4.14.0",
     "helmet": "^3.1.0",
     "jsonwebtoken": "^7.1.9",
+    "morgan": "^1.8.1",
     "rethinkdb": "^2.3.3",
     "uuid": "^3.0.1"
   },

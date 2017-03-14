@@ -45,7 +45,7 @@ export const Auth = new Service({
       })
 
       // generate tokens
-      const tokens = await generateTokens({ id: user.id }, client_id)
+      const tokens = await generateTokens(user.id, client_id)
 
       return { user_id: user.id, client_id, tokens }
     },
@@ -74,7 +74,7 @@ export const Auth = new Service({
           throw null
         }
 
-        const tokens = await token.generateToken({ id: user.id }, client_id)
+        const tokens = await token.generateToken(user.id, client_id)
 
         // let refresh_tokens = user.refresh_tokens || []
         //

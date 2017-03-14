@@ -1,3 +1,4 @@
+import HttpError from '../utils/http-error'
 import { Router } from 'express'
 import nextAsync from '../utils/next-async'
 
@@ -47,21 +48,29 @@ export default class Service {
     return await model.getAll()
   }
 
-  'POST /' = async ( req ) => {
+  'POST /' = async ( req, res ) => {
     const { body } = req
     const { model } = this
 
-    // TODO: Handle id
-    await model.create( body )
+    await hook( 'before create write', req, body )
+    const obj = await model.create( body )
+    await hook( 'after create write', req, obj, body )
+
+    res.status( 201 )
+    return obj
   }
 
   'GET /:id' = async ( req ) => {
     const { params: { id } } = req
     const { model, hook } = this
 
-    await hook( 'before', 'get read', req, id )
+    await hook( 'before get read', req, id )
     const data = await model.get(id)
-    await hook( 'after', 'get read', req, id, data )
+    await hook( 'after get read', req, id, data )
+
+    if ( ! data ) {
+      throw new HttpError( 404, 'Not found' )
+    }
 
     return data
   }
@@ -69,44 +78,58 @@ export default class Service {
   'PUT /:id' = async ( req ) => {
     const { params: { id }, body } = req
     const { model, hook } = this
+    let obj
 
-    let doc
+    if ( typeof body != 'object' || Object.keys(body).length === 0 ) {
+      throw new HttpError('400', 'Bad Request')
+    }
 
-    await hook( 'before', 'update read', req, id )
-    doc = await model.get( id )
-    await hook( 'after', 'update read', req, doc )
+    await hook( 'before update read', req, id )
+    obj = await model.get( id )
+    await hook( 'after update read', req, obj )
 
-    await hook( 'before', 'update write', req, body )
-    doc = await model.update( id, body )
-    await hook( 'after', 'update write', req, body )
+    if ( ! obj ) {
+      throw new HttpError( 404, 'Not found' )
+    }
 
-    return doc
+    await hook( 'before update write', req, id, obj, body ) /* req, id, current, changes */
+    obj = await model.update( id, body )
+    await hook( 'after update write', req, obj, body ) /* req, id, current, changed */
+
+    return obj
   }
 
   'DELETE /:id' = async ( req ) => {
     const { params: { id } } = req
     const { model, hook } = this
+    let obj
 
-    await hook( 'before', 'delete', req )
+    await hook( 'before delete read', req, id )
+    obj = await model.get( id )
+    await hook( 'after delete read', req, obj )
+
+    if ( ! obj ) {
+      throw new HttpError( 404, 'Not found' )
+    }
+
+    await hook( 'before delete write', req )
     await model.remove( id )
-    await hook( 'after', 'delete', req )
+    await hook( 'after delete write', req )
 
   }
 
   // End of default methods
 
-  hook = async ( when, action, ...args ) => {
+  hook = async ( hk, ...args ) => {
     const { hooks } = this
 
-    const runningFor = `${when} ${action}`
-
-    if ( hooks && typeof hooks[runningFor] == 'function' ) {
-      await hooks[runningFor].apply( this, args )
+    if ( hooks && typeof hooks[hk] == 'function' ) {
+      await hooks[hk].apply( this, args )
     }
 
     // Save it for later, to allow multiple hooks
     // for ( let hookName in hooks ) {
-    //   if ( hookName !== runningFor ) continue
+    //   if ( hookName !== hk ) continue
     //
     //   await hooks[hookName].apply( this, args )
     // }

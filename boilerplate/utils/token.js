@@ -8,39 +8,39 @@ const options = {
   expiresIn: JWT_ACCESS_VALIDITY
 }
 
+export const JWT_AUTHORIZATION_REGEXP = /^JWT [0-9a-zA-Z\-\_]+\.[0-9a-zA-Z\-\_]+\.[0-9a-zA-Z\-\_]+$/
+
 export async function decodeToken (token) {
-  let payload
-
-  try {
-    payload = jwt.verify(token, JWT_SECRET)
-  } catch ( e ) {
-    throw new Error('Invalid token')
-  }
-
-  return payload
+  return jwt.verify(token, JWT_SECRET)
 }
 
-export async function generateTokens (data, client_id) {
-  const access = jwt.sign(data, JWT_SECRET, options)
-  const refresh = jwt.sign({client_id, id: data.id}, JWT_SECRET, {...options, expiresIn: JWT_REFRESH_VALIDITY})
+export async function generateTokens (user, client) {
+  const access = await generateAccessToken(user, client)
+  const refresh = await generateRefreshToken(user, client)
 
   return {access, refresh}
 }
 
-export async function renewAccessToken (refresh, client_id) {
-  const decoded = jwt.verify(refresh, JWT_SECRET)
+export async function renewAccessToken (refresh, rcvdClient) {
+  const { user, client } = jwt.verify(refresh, JWT_SECRET)
 
-  if (client_id != decoded.client_id) {
+  if (client != rcvdClient) {
     throw new Error( 'different client id' )
   }
 
-  const user = await User.get(decoded.id)
-
-  if (! user.refreshs.find((item) => item.token == refresh) ) {
-    throw new Error( 'invalid refresh token' )
-  }
-
-  const access = jwt.sign({id:decoded.id}, JWT_SECRET, options)
+  // TODO: Verify token on user's generated tokens
+  const access = await generateRefreshToken(user, client)
 
   return access
+}
+
+// private methods
+async function generateAccessToken ( user, client ) {
+  // TODO: Save refresh on user's account later
+  return jwt.sign({user, client}, JWT_SECRET, options)
+}
+
+async function generateRefreshToken ( user, client ) {
+  // TODO: Save refresh on user's account later
+  return jwt.sign({user, client}, JWT_SECRET, {...options, expiresIn: JWT_REFRESH_VALIDITY})
 }

@@ -1,6 +1,8 @@
 import { User } from '../../src/models'
 import Service from '../builders/service'
 import HttpError from '../utils/http-error'
+import parseToken from '../middlewares/parse-token'
+
 
 export const Users = new Service({
   model: User,
@@ -10,6 +12,7 @@ export const Users = new Service({
       delete data.password
     }
   },
+  middlewares: [ parseToken ],
   custom: {
     // Disallow REST CREATE - POST /users - Users should be created trough 'POST /auth'
     async 'POST /' () {
