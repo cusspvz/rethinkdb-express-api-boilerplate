@@ -25,9 +25,7 @@ export default class Service {
 
     if ( typeof options.custom == 'object' ) {
       for ( let name in options.custom ) {
-        if ( typeof options.custom[name] == 'function' ) {
-          this[name] = options.custom[name]
-        }
+        this[name] = options.custom[name]
       }
     }
 
