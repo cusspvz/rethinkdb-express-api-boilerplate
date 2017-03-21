@@ -39,7 +39,7 @@ export const Todos = new Service({
     async 'GET /' () {
       const { hook } = this
 
-      await hook( 'after', 'sunbath' )
+      await hook( 'after sunbath' )
 
       return { json: 'response' }
     },
