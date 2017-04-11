@@ -22,13 +22,10 @@ export const User = thinky.createModel(
 export default User
 
 User.getByEmail = async function ( email ) {
-  const conn = await connector()
+  const table = this.getTableName()
 
-  const cursor = await r.table('users')
-    .filter(r.row('email')('address').eq(email))
-    .run(conn)
+  const users = await this.filter(r.row('email')('address').eq(email)).run()
 
-  const users = await cursor.toArray()
   if(users.length)
     return users[0]
   return null
