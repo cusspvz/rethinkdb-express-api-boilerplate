@@ -21,7 +21,7 @@ export const User = thinky.createModel(
 
 export default User
 
-User.prototype.getByEmail = async function ( email ) {
+User.getByEmail = async function ( email ) {
   const conn = await connector()
 
   const cursor = await r.table('users')
