@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import Promise from 'bluebird'
-import { JWT_SECRET, JWT_ALGORITHM, JWT_ACCESS_VALIDITY, JWT_REFRESH_VALIDITY } from '../../src/configs'
+import { JWT_SECRET, JWT_ALGORITHM, JWT_ACCESS_VALIDITY, JWT_REFRESH_VALIDITY } from '../../src/config'
 import { User } from '../../src/models'
 
 const options = {

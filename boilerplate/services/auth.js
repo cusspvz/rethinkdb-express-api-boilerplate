@@ -9,7 +9,7 @@ import uuid from 'uuid/v4'
 export const Auth = new Service({
   endpoint: '/auth',
   custom: {
-    'POST /register': async function create (req) {
+    'POST /register': async function (req) {
       let { body: { email, password, name, client_id } } = req
 
       if (! email || ! EmailValidator.validate(email)) {
@@ -35,14 +35,13 @@ export const Auth = new Service({
       }
 
       // create user
-      const user = await User.create({
-        name,
-        password: hashPassword( password ),
-        email: {
-          address: email,
-          verified: false, // user email isn't verified
-        }
+      const user = new User({
+        ...req.body,
+        auth: { password: hashPassword( password ) },
+        email: { address: email, verified: false },
       })
+
+      await user.save()
 
       // generate tokens
       const tokens = await generateTokens(user.id, client_id)
@@ -50,8 +49,31 @@ export const Auth = new Service({
       return { user_id: user.id, client_id, tokens }
     },
 
-    'POST /login': async function create (req) {
-      let { body: { email, password } } = req
+    'POST /recover': async function (req) {
+      const { body: { id, email, token, new_password } } = req
+      let user = null
+
+      if ( id ) {
+        try {
+          user = await User.get( id )
+        } catch ( e ) {}
+      }
+
+      if ( ! user && email ) {
+        try {
+          user = await User.getByEmail(email)
+        } catch ( e ) {}
+      }
+
+      if ( ! user ) {
+        throw new HttpError(400, 'Unable to identify user')
+      }
+
+      // TODO : add token generator
+    },
+
+    'POST /login': async function (req) {
+      let { body: { client_id, email, password } } = req
 
       if (! email || ! EmailValidator.validate(email)) {
         throw new HttpError(400, 'Invalid email address')
@@ -63,6 +85,10 @@ export const Auth = new Service({
         password = password.trim()
       }
 
+      if (! client_id) {
+        client_id = uuid()
+      }
+
       try {
         const user = await User.getByEmail(email)
 
@@ -70,42 +96,17 @@ export const Auth = new Service({
           throw null
         }
 
-        if (! await authenticatePassword(password, user.password)) {
+        if (! await authenticatePassword(password, user.auth.password)) {
           throw null
         }
 
-        const tokens = await token.generateToken(user.id, client_id)
+        const tokens = await generateTokens(user.id, client_id)
 
-        // let refresh_tokens = user.refresh_tokens || []
-        //
-        // // if there is a token registered for the client, update it
-        // var clientFound = false
-        // for(let j = 0; j < refresh_tokens.lengt; j++) {
-        //   if(refresh_tokens[j].client_id === client_id) {
-        //     refresh_tokens[j].token = tokens.refresh_token
-        //     clientFound = true
-        //   }
-        // }
-
-        // if the client is registering for the first time, add token
-        // if( ! clientFound){
-        //   refresh_tokens.push({
-        //     token: tokens.refresh_token,
-        //     client_id
-        //   })
-        // }
-
-        // const dbRes = await User.update(user.id, {refresh_tokens})
-        // if( ! dbRes)
-        //   throw new HttpError()
-        return tokens
-
+        return { user_id: user.id, client_id, tokens }
       } catch(err) {
         throw new HttpError(403, 'Invalid email/password combination')
       }
     },
-
-
 
     // Disable default methods
     'POST /': false,

@@ -25,12 +25,14 @@
     "bcrypt": "^0.8.7",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
+    "cors": "^2.8.2",
     "email-validator": "^1.0.7",
     "express": "^4.14.0",
     "helmet": "^3.1.0",
     "jsonwebtoken": "^7.1.9",
     "morgan": "^1.8.1",
-    "rethinkdb": "^2.3.3",
+    "nodemailer": "^3.1.8",
+    "thinky": "^2.3.8",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
