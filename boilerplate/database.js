@@ -8,7 +8,7 @@ export const thinky = Thinky({
   db: DB_NAME + (env.NODE_ENV === 'test' ? '-test' : ''),
 
   user: DB_USER,
-  pass: DB_PASS,
+  password: DB_PASS,
 })
 
 export const ready = thinky.dbReady()
