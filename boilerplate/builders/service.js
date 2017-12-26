@@ -48,7 +48,7 @@ export default class Service {
 
   'POST /' = async ( req, res ) => {
     const { body } = req
-    const { model } = this
+    const { model, hook } = this
 
     await hook( 'before create write', req, body )
     const obj = await model.create( body )
