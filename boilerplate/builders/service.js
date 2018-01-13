@@ -25,7 +25,9 @@ export default class Service {
 
     if ( typeof options.custom == 'object' ) {
       for ( let name in options.custom ) {
+        // if ( typeof options.custom[name] == 'function' ) {
         this[name] = options.custom[name]
+        // }
       }
     }
 
@@ -51,7 +53,8 @@ export default class Service {
     const { model, hook } = this
 
     await hook( 'before create write', req, body )
-    const obj = await model.create( body )
+    const obj = new model(body)
+    await obj.save()
     await hook( 'after create write', req, obj, body )
 
     res.status( 201 )
@@ -61,16 +64,21 @@ export default class Service {
   'GET /:id' = async ( req ) => {
     const { params: { id } } = req
     const { model, hook } = this
+    let obj
 
     await hook( 'before get read', req, id )
-    const data = await model.get(id)
-    await hook( 'after get read', req, id, data )
+    try {
+      obj = await model.get( id )
+    } catch (e) {
+      obj = null
+    }
+    await hook( 'after get read', req, id, obj )
 
-    if ( ! data ) {
+    if ( ! obj ) {
       throw new HttpError( 404, 'Not found' )
     }
 
-    return data
+    return obj
   }
 
   'PUT /:id' = async ( req ) => {
@@ -83,15 +91,26 @@ export default class Service {
     }
 
     await hook( 'before update read', req, id )
-    obj = await model.get( id )
+    try {
+      obj = await model.get( id )
+    } catch (e) {
+      obj = null
+    }
     await hook( 'after update read', req, obj )
 
     if ( ! obj ) {
       throw new HttpError( 404, 'Not found' )
     }
 
+    obj.merge( body )
+
+    await hook( 'before update validate', req, id, obj, body ) /* req, id, current, changes */
+    await obj.validate()
+    await hook( 'after update validate', req, obj, body ) /* req, id, current, changed */
+
+
     await hook( 'before update write', req, id, obj, body ) /* req, id, current, changes */
-    obj = await model.update( id, body )
+    await obj.save()
     await hook( 'after update write', req, obj, body ) /* req, id, current, changed */
 
     return obj
@@ -103,7 +122,11 @@ export default class Service {
     let obj
 
     await hook( 'before delete read', req, id )
-    obj = await model.get( id )
+    try {
+      obj = await model.get( id )
+    } catch (e) {
+      obj = null
+    }
     await hook( 'after delete read', req, obj )
 
     if ( ! obj ) {
